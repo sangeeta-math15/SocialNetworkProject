@@ -1,13 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import RegisterView, LoginView, UserSearchView, FriendRequestViewSet
+from .views import UserSearchView, FriendRequestViewSet, UserViewSet
 
 router = DefaultRouter()
-router.register(r'friend-requests', FriendRequestViewSet, basename='friend-request')
+router.register(r'users/friend-requests', FriendRequestViewSet, basename='friend-request')
+router.register(r'users', UserViewSet, basename='user')
+
 
 urlpatterns = [
-    path('signup/', RegisterView.as_view(), name='register'),
-    path('login/', LoginView.as_view(), name='login'),
-    path('search/', UserSearchView.as_view(), name='user-search'),
+    path('users/search/', UserSearchView.as_view(), name='user-search'),
     path('', include(router.urls)),
 ]

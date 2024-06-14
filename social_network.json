@@ -1,0 +1,421 @@
+{
+	"info": {
+		"_postman_id": "d8d86ca4-51fd-4ec7-86e9-28dbbc903101",
+		"name": "NetworkApplication",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19281423"
+	},
+	"item": [
+		{
+			"name": "signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"rinki\",\n  \"email\": \"rinki@gmail.com\",\n  \"first_name\":\"nivi\",\n  \"last_name\":\"math\",\n  \"password\": \"pass@123\"\n\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base-url}}api/users/",
+					"host": [
+						"{{base-url}}api"
+					],
+					"path": [
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parse the response body",
+							"var data = JSON.parse(responseBody);",
+							"console.log(\"JWT Token:\", data.access_token);",
+							"",
+							"pm.environment.set(\"jwt_token\", data.access_token);",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"pooja@gmail.com\",\n    \"password\": \"pass@123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base-url}}api/users/login/",
+					"host": [
+						"{{base-url}}api"
+					],
+					"path": [
+						"users",
+						"login",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parse the response body",
+							"var data = JSON.parse(responseBody);",
+							"console.log(\"JWT Token:\", data.access);",
+							"",
+							"pm.environment.set(\"jwt_token\", data.access);",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxODM5ODkyNiwiaWF0IjoxNzE4MzEyNTI2LCJqdGkiOiIwOGE5ODk1YzhiNjM0MWZjYjA3NzA3OGU5MTQ2Y2VhMCIsInVzZXJfaWQiOjEzfQ.qsRnOM0wXIzvq4GLz7HDeiG3kPibMQGAwSqEdzX-85M\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base-url}}api/users/logout/",
+					"host": [
+						"{{base-url}}api"
+					],
+					"path": [
+						"users",
+						"logout",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/users/search/?search=ki",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"search",
+						""
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "search",
+							"value": "ki"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "friend_request",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"to_user_id\": 12\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base-url}}api/users/friend-requests/",
+					"host": [
+						"{{base-url}}api"
+					],
+					"path": [
+						"users",
+						"friend-requests",
+						""
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "am",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "accept",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base-url}}api/users/friend-requests/2/accept_request/",
+					"host": [
+						"{{base-url}}api"
+					],
+					"path": [
+						"users",
+						"friend-requests",
+						"2",
+						"accept_request",
+						""
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "am",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reject",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base-url}}api/users/friend-requests/2/reject_request/",
+					"host": [
+						"{{base-url}}api"
+					],
+					"path": [
+						"users",
+						"friend-requests",
+						"2",
+						"reject_request",
+						""
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "am",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_friends",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base-url}}api/users/friend-requests/list_friends/",
+					"host": [
+						"{{base-url}}api"
+					],
+					"path": [
+						"users",
+						"friend-requests",
+						"list_friends",
+						""
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "am",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_pending_requests",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base-url}}api/users/friend-requests/list_pending_requests/",
+					"host": [
+						"{{base-url}}api"
+					],
+					"path": [
+						"users",
+						"friend-requests",
+						"list_pending_requests",
+						""
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "am",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base-url",
+			"value": "http://127.0.0.1:8000/"
+		},
+		{
+			"key": "jwt_token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE4MTkwNTI2LCJpYXQiOjE3MTgxOTAyMjYsImp0aSI6ImJmN2UzNTVmNjMyMTQxNmE5ZTFiMmY4NTgyNDlmZDY3IiwidXNlcl9pZCI6M30._oFV4PE2nTx_eiTSjXdMQyWIzV9nZ25oum3xzK2gPiQ"
+		}
+	]
+}

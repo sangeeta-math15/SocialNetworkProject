@@ -1,38 +1,42 @@
 from django.db.models import Q
-from rest_framework.permissions import AllowAny
-from .serializers import LoginSerializer
-from rest_framework import viewsets, status
+from .serializers import LoginSerializer, UserSearchSerializer, UserSerializer, FriendRequestSerializer
+from rest_framework import viewsets, status, generics, permissions
 from rest_framework.response import Response
 from django_ratelimit.decorators import ratelimit
 from rest_framework.decorators import action
 from django.utils.decorators import method_decorator
 from .models import User, FriendRequest
-from .serializers import UserSerializer, FriendRequestSerializer
-from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from .serializers import UserSearchSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
-class RegisterView(generics.CreateAPIView):
-    """
-    API for user registration
-    """
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
 
-
-class LoginView(generics.GenericAPIView):
-    """
-    API for user login
-    """
-    serializer_class = LoginSerializer
-    permission_classes = [AllowAny]
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+    @action(detail=False, methods=['post'])
+    def login(self, request):
+        """
+            API for user login
+        """
+        serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+        user = serializer.validated_data
+        return Response(user, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'])
+    def logout(self, request):
+        """
+            API for user logout
+        """
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({"message": "Successfully logged out."}, status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserSearchView(generics.ListAPIView):
@@ -110,7 +114,6 @@ class FriendRequestViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
     @action(detail=True, methods=['put'])
     def accept_request(self, request, pk=None):
         user = request.user
@@ -130,7 +133,6 @@ class FriendRequestViewSet(viewsets.ModelViewSet):
             return Response({'status': 'Friend request accepted'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
     @action(detail=True, methods=['put'])
     def reject_request(self, request, pk=None):
